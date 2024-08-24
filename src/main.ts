@@ -17,10 +17,12 @@ import { ArrangeHandler, RearrangeType } from "./arrange";
 import { CreateHandler } from "./create";
 import { isExcluded } from "./exclude";
 import { getMetadata } from "./settings/metadata";
+import { HideFolder } from "./HideFolder";
 
 export default class AttachmentManagementPlugin extends Plugin {
   settings: AttachmentManagementPluginSettings;
   createdQueue: TFile[] = [];
+  hideFolder: HideFolder
   originalObsAttachPath: string;
 
   async onload() {
@@ -199,6 +201,9 @@ export default class AttachmentManagementPlugin extends Plugin {
           }
         })
       );
+
+      this.hideFolder = new HideFolder(this);
+      this.hideFolder.load();
 
       // This adds a settings tab so the user can configure various aspects of the plugin
       this.addSettingTab(new SettingTab(this.app, this));

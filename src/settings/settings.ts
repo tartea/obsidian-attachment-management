@@ -67,6 +67,7 @@ export interface AttachmentManagementPluginSettings {
   excludeExtensionPattern: string;
   // Auto-rename attachment folder or filename and update the link
   autoRenameAttachment: boolean;
+  autoHideAttachment: boolean;
   // Exclude path not to rename
   excludedPaths: string;
   // Exclude path array
@@ -83,13 +84,14 @@ export const DEFAULT_SETTINGS: AttachmentManagementPluginSettings = {
   attachPath: {
     attachmentRoot: "",
     saveAttE: `${SETTINGS_ROOT_OBSFOLDER}`,
-    attachmentPath: `${SETTINGS_VARIABLES_NOTEPATH}/${SETTINGS_VARIABLES_NOTENAME}`,
+    attachmentPath: `${SETTINGS_VARIABLES_NOTENAME}_Attachments`,
     attachFormat: `IMG-${SETTINGS_VARIABLES_DATES}`,
     type: SETTINGS_TYPES.GLOBAL,
   },
   dateFormat: "YYYYMMDDHHmmssSSS",
   excludeExtensionPattern: "",
   autoRenameAttachment: true,
+  autoHideAttachment: false,
   excludedPaths: "",
   excludePathsArray: [],
   excludeSubpaths: false,
@@ -231,8 +233,17 @@ export class SettingTab extends PluginSettingTab {
       )
       .addToggle((toggle) =>
         toggle.setValue(this.plugin.settings.autoRenameAttachment).onChange(async (value) => {
-          debugLog("setting - automatically rename attachment folder:" + value);
+          debugLog("setting - automatically hide attachment folder:" + value);
           this.plugin.settings.autoRenameAttachment = value;
+          await this.plugin.saveSettings();
+        })
+      );
+    new Setting(containerEl)
+      .setName("Hide attachment folder")
+      .addToggle((toggle) =>
+        toggle.setValue(this.plugin.settings.autoHideAttachment).onChange(async (value) => {
+          debugLog("setting - automatically rename attachment folder:" + value);
+          this.plugin.settings.autoHideAttachment = value;
           await this.plugin.saveSettings();
         })
       );
